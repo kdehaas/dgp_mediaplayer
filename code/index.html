@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DGP_Player</title>
+
+    <style>
+
+        html, body {
+            margin: 0px;
+            padding: 0px;
+            cursor: none;
+            font-family: Arial,serif;
+            font-size:  13px;
+            font-weight: bold;
+        }
+
+        .fullscreen video#video {
+            /*position: fixed;
+            top: 0px;
+            left: 0px;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            -ms-transform: translateX(-50%) translateY(-50%);
+            -moz-transform: translateX(-50%) translateY(-50%);
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+            background-size: cover;*/
+
+        }
+
+        .list {
+            border-top: #000 2px solid;
+        }
+
+        .play {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #list {
+            position: fixed;
+            padding: 5px;
+            bottom: 0px;
+            width: 100%;
+            height: auto;
+            background-color: rgba(255, 255, 255, 1);
+            min-height: 150px;
+        }
+
+        #list ul {
+            padding: 0px;
+            margin: 0px 0px 0px 0px;
+            display: inline-block;
+            float: left;
+        }
+
+        #list ul li {
+            list-style: none;
+            width: 100px;
+            padding: 2px 2px 2px 2px;
+            display: inline-block;
+
+            cursor: pointer;
+        }
+
+        #list ul li img {
+            position: relative;
+        }
+
+        #list ul li span {
+            text-align: center;
+            margin: auto;
+            display: table;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="fullscreen">
+        <video playsinline autoplay id="video" width="100%">
+            <source id="src_mp4" src="video/bouw_vastgoed/zuiver_wonen.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div id="list" class="list">
+        <ul id="list_items" class="items"></ul>
+        <div id="video_items" class="items" style="display: none;"></div>
+        <div id="button_items" class="items" style="display: inline-block; top: 5px;">
+            <ul id="control" style="display: inline;">
+                <li class="back" id="back_btn" style="display: none;" >
+                    <img src="images/icons/back_btn.png" />
+                    <span>Terug</span>
+                </li>
+
+                <li class="play" id="playpause_btn">
+                    <img id="play_btn" src="images/icons/play_btn.png" style="display: none;" />
+                    <img id="pause_btn" src="images/icons/pause_btn.png" style="display: inline-block;" />
+                    <span id="playpause_txt">Pause</span>
+                </li>
+
+                <li class="close" id="close_btn">
+                    <img src="images/icons/close_btn.png" />
+                    <span>Sluiten</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    </body>
+
+    <script type="text/javascript" src="script.js"></script>
+
+</html>
