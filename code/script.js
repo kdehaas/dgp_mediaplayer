@@ -1,254 +1,220 @@
-(function() {
-
-  // boolean to check if player
-  var play = true;
-
-  var video = document.getElementById("video");
-  var mp4_source = document.getElementById("src_mp4");
-  var lists = document.getElementById("list");
-
-  // buttons
-  var playpause = document.getElementById("playpause_btn");
-  var playpause_txt = document.getElementById("playpause_txt");
-  var back = document.getElementById("back_btn");
-  var close = document.getElementById("close_btn");
-
-  var play_btn = document.getElementById("play_btn");
-  var pause_btn = document.getElementById("pause_btn");
-
-  // path to video directory
-  var video_path = "video"
-
-  // [Title, Filename]
-  var items = [
-                  // Bouw
-                  [
-                      ["Bouw & vastgoed", "bouw_vastgoed"],
-
-                      [
-                        /*
-                          ["MorgenWonen 1", "morgenwonen"],
-                          ["MorgenWonen 2", "morgenwonen_bouw_montageproces"],
-                          ["NieuwWonen 1", "nieuwwonen"],
-                          ["NieuwWonen 2", "ried"],
-                          ["BouwHub", "bouwhub"],
-
-                          ["Finch buildings & DGV", "finch_buildings_de_groot_vroomshoop"],
-                          ["HOMIJ the Edge", "homij_tepb"],
-                          ["HOMIJ DLS", "homij_dls"],
-                          ["ONE Dubotechniek", "one_dubotechniek"],
-                          ["ZuiverWonen", "zuiver_wonen"]
-                        */
-                      ]
-
-                  ],
-                  // Infra
-                  [
-                      ["Infrastructuur", "infrastructuur"],
-                      [
-                          ["Asset Insight", "asset_insight"],
-                          ["Digitaal ontwerpen bij VWICC", "digitaal_ontwerp_vwicc"],
-                          /*
-                          ["Drones VolkerRail", "drone_beelden_volkerrail"],
-                          ["FloWithDGlow SNI", "flowwithdglowr_kralingsebos"],
-                          ["HERA KWS", "hera_kws_infra"],
-                          ["Drones AdB", "inzet_drones_aveco_de_bondt"],
-                          ["Weginnovaties KWS", "kws_konwebcity_konwebright_zonneweg"],
-                          ["Materialenpaspoort AdB", "materialenpaspoort_aveco_de_bondt"],
-                          ["PlasticRoad KWS", "plastic_road_kws"],
-                          ["Quickscan AdB", "quickscan_aveco_de_bondt"],
-                          ["DusDuurzaam VHB", "van_hattum_en_blankevoort_dus_duurzaam"],
-                          ["VanDeBouwplaats VHB", "vandebouwplaats_vhb"],
-                          ["Greenwall KWS", "van_kessel_greenwall"],
-                          ["Beter Benutten Vialis", "vialis_beter_benutten_ivri"],
-                          ["Schwung Vialis", "vialis_schwung"],
-                          ["Tunnel Cal. Scenario Vialis", "vialis_tunnel_calamiteitenscenario"],
-                          ["Verkeer.nu Vialis", "vialis_verkeer_nu"],
-                          ["Verkeerplaza Vialis", "vialis_verkeerplaza_gotru"],
-                          ["Energietransitie VSH", "vsh_energietransitie"],
-                          ["D.A.T. VolkerRail", "filmpje_dat"],
-                          ["Flexmonitoring VolkerRail", "flexmonitoring_bedrijfsfilm"],
-                          ["Sherloc VolkerRail", "volkerRail_sherloc_ned_final"],
-                          ["Dyn. laserscannen VolkerRail", "schiphol_demo"],
-                          */
-                      ]
-                  ],
-                  // Telecom
-                  [
-                      ["Energie & telecom", "energie_telecom"],
-                      [
-                        /*
-                          ["MAPXACT", "maxpact"],
-                          ["VW iCity 1", "volkerwessels_icity_main"],
-  						            ["VW iCity 2", "volkerwessels_icity_mobility"]
-                          */
-                      ]
-                  ]
-              ];
-
-  var list_items = document.getElementById("list_items");
-  var video_items = document.getElementById("video_items");
-
-  var iindex = 0;
-  var lindex = 0;
-
-  for(var i = 0; i < items.length; i++) {
-
-      var li = document.createElement("li");
-
-      li.setAttribute("class", "item");
-      li.setAttribute("id", "item" + i);
-
-      var img = document.createElement("img");
-      img.setAttribute("src", "images/" + items[i][0][1] + ".png");
-      li.appendChild(img);
+(function () {
 
-      var span = document.createElement("span");
-      span.innerHTML = items[i][0][0];
-      li.appendChild(span);
+    // boolean to check if player
+    var play = true;
 
-      var sub_video_items = document.createElement("ul");
-      sub_video_items.setAttribute("class", items[i][0][1] + "_items");
-      sub_video_items.setAttribute("id", items[i][0][1] + "_items");
+    var video = document.getElementById("video");
+    var mp4_source = document.getElementById("src_mp4");
+    var lists = document.getElementById("list");
 
+    // buttons
+    var playpause = document.getElementById("playpause_btn");
+    var playpause_txt = document.getElementById("playpause_txt");
+    var back = document.getElementById("back_btn");
+    var close = document.getElementById("close_btn");
 
-      for(var l = 0; l < items[i][1].length; l++) {
+    var play_btn = document.getElementById("play_btn");
+    var pause_btn = document.getElementById("pause_btn");
 
-          var vli = document.createElement("li");
+    // path to video directory
+    var video_path = "images"
 
-          // set item
-          vli.setAttribute("class", "video");
-          vli.setAttribute("id", "video" + l);
+    var list_items = document.getElementById("list_items");
+    var video_items = document.getElementById("video_items");
 
-          // set image
-          var img = document.createElement("img");
-          img.setAttribute("src", "images/" + items[i][0][1] + "/" + items[i][1][l][1] + ".jpg");
-          vli.appendChild(img);
+    $.post("/.?folder=images",
+        JSON.stringify("images"),
+        function (data, status) {
+            var folders = JSON.parse(data)
 
-          // set title
-          var span = document.createElement("span");
-          span.innerHTML = items[i][1][l][0];
-          vli.appendChild(span);
+            for (var i = 0; i < folders.length; i++) {
+                var folder = folders[i];
+                var folderid = folderIdFromName(folder);
 
-          // indexes
-          vli.iindex = i;
-          vli.lindex = l;
+                var li = document.createElement("li");
 
-          vli.addEventListener("click", function (e) {
+                li.setAttribute("class", "item");
+                li.setAttribute("id", "item" + i);
 
-              iindex = this.iindex;
-              lindex = this.lindex;
+                var img = document.createElement("img");
+                img.setAttribute("src", "images/" + folder + ".png");
+                img.width = "100";
+                img.height = "100";
+                li.appendChild(img);
 
-              var video_id = items[iindex][1][lindex][1];
+                var span = document.createElement("span");
+                span.innerHTML = folder;
+                li.appendChild(span);
+                list_items.append(li);
 
-              // set source
-              mp4_source.src = video_path + "/" + items[iindex][0][1] + "/" + video_id + ".mp4";
+                var sub_video_items = document.createElement("ul");
+                sub_video_items.setAttribute("class", folderid + "_items");
+                sub_video_items.setAttribute("id", folderid + "_items");
 
-              // load video
-              video.load();
+                $.post("/.?folder=" + encodeURIComponent("images/" + folder),
+                    JSON.stringify({ 'folder': "images/" + folder }),
+                    function (data, status) {
+                        var files = JSON.parse(data)
+                        // console.log("This is the returned data:");
+                        // console.log(files);
 
-              lists.style.display = "none";
+                        for (var l = 0; l < files.length; l++) {
+                            var file = files[l];
+                            var vli = document.createElement("li");
 
-          });
+                            // set item
+                            vli.setAttribute("class", "video");
+                            vli.setAttribute("id", "video" + l);
 
-          sub_video_items.appendChild(vli);
-      }
+                            // set image
+                            var img = document.createElement("img");
+                            img.setAttribute("src", "images/" + folder + "/" + file + ".png");
+                            vli.appendChild(img);
 
-      video_items.appendChild(sub_video_items);
+                            // set title
+                            var span = document.createElement("span");
+                            span.innerHTML = file;
+                            vli.appendChild(span);
 
-      li.index = i;
-      li.addEventListener("click", function (e) {
+                            // indexes
+                            vli.iindex = i;
+                            vli.lindex = l;
 
-          var index = this.index;
+                            vli.addEventListener("click", function (e) {
 
-          for(var z = 0; z < items.length; z++) {
-              var current_items = document.getElementById(items[z][0][1] + "_items");
-              current_items.style.display = "none";
-          }
+                                iindex = this.iindex;
+                                lindex = this.lindex;
 
-          var current_item = document.getElementById(items[index][0][1] + "_items");
+                                // set source
+                                mp4_source.src = video_path + "/" + folder + "/" + file + ".mp4";
 
-          current_item.style.display = "inline-block";
+                                // load video
+                                video.load();
 
-          back.style.display = "inline-block";
-          list_items.style.display = "none";
-          video_items.style.display = "inline-block";
+                                lists.style.display = "none";
 
-      });
+                            });
+                            sub_video_items.appendChild(vli);
+                        }
+                        video_items.appendChild(sub_video_items);
 
-      list_items.appendChild(li);
+                        li.index = i;
+
+
+                    }, "text");
 
-  }
+                li.addEventListener("click", function (e) {
+                    for (var z = 0; z < folders.length; z++) {
+                        var current_items = document.getElementById(folderIdFromName(folders[z]) + "_items");
+                        if (current_items != null) {
+                            current_items.style.display = "none";
+                        }
+                    }
 
-  playpause.addEventListener("click", function () {
+                    var current_item = document.getElementById(folderIdFromName(folder) + "_items");
+                    if (current_item != null) {
+                        current_item.style.display = "inline-block";
+                    }
+                    back.style.display = "inline-block";
+                    list_items.style.display = "none";
+                    video_items.style.display = "inline-block";
 
-      if(play == true) {
-          video.pause();
-          play = false;
+                });
+            }
+        }, "text");
 
-          play_btn.style.display = "inline-block";
-          pause_btn.style.display = "none";
 
-          playpause_txt.innerHTML = "Play";
+    playpause.addEventListener("click", function () {
 
-      } else {
-          video.play();
-          play = true;
+        if (play == true) {
+            video.pause();
+            play = false;
 
-          play_btn.style.display = "none";
-          pause_btn.style.display = "inline-block";
+            play_btn.style.display = "inline-block";
+            pause_btn.style.display = "none";
 
-          playpause_txt.innerHTML = "Pause";
+            playpause_txt.innerHTML = "Play";
 
-      }
-  });
+        } else {
+            video.play();
+            play = true;
 
-  back.addEventListener("click", function () {
-      back.style.display = "none";
-      list_items.style.display = "inline-block";
-      video_items.style.display = "none";
+            play_btn.style.display = "none";
+            pause_btn.style.display = "inline-block";
 
-      //clearInterval(interval);
-  });
+            playpause_txt.innerHTML = "Pause";
 
-  // show list
-  video.addEventListener("click", function () {
-      lists.style.display = "inline-block";
-  });
+        }
+    });
 
-  // hide list
-  close.addEventListener("click", function() {
+    back.addEventListener("click", function () {
+        back.style.display = "none";
+        list_items.style.display = "inline-block";
+        video_items.style.display = "none";
 
-      lists.style.display = "none";
+        //clearInterval(interval);
+    });
 
-  });
+    // show list
+    video.addEventListener("click", function () {
+        lists.style.display = "inline-block";
+    });
 
-  function randomizer(itms) {
+    // hide list
+    close.addEventListener("click", function () {
 
-      var list_items = itms;
-      // random company item
-      var rand_item = Math.floor(Math.random() * (list_items.length - 1));
-      // random video item
-      var rand_video_item = Math.floor(Math.random() * (list_items[rand_item][1].length - 1));
+        lists.style.display = "none";
 
-      // select video from array
-      return items[rand_item][1][rand_video_item][1];
-  }
+    });
 
-  // random video item function
-  video.addEventListener('ended', function() {
+    function folderIdFromName(name) {
+        try {
+            var badthings = [' ', '&'];
+            var result = name;
+            for (var i = 0; i < badthings.length; i++) {
+                result = result.replaceAll(badthings[i], "_");
+            }
+            return result;
+        } catch{
+            return name;
+        }
+    }
 
-      console.log("-------");
-      console.log("search for next video");
+    String.prototype.replaceAll = function (find, replace) {
+        try {
+            var str = this;
+            return str.replace(new RegExp(find, 'g'), replace);
+        } catch {
+            return str;
+        }
+    };
 
-      var video_id = randomizer(items);
+    function randomizer(itms) {
 
-      // set video source
-      mp4_source.src = video_path + "/" + video_id + ".mp4";
+        var list_items = itms;
+        // random company item
+        var rand_item = Math.floor(Math.random() * (list_items.length - 1));
+        // random video item
+        var rand_video_item = Math.floor(Math.random() * (list_items[rand_item][1].length - 1));
 
-      // load video
-      video.load();
+        // select video from array
+        return items[rand_item][1][rand_video_item][1];
+    }
 
-  }, false);
+    // random video item function
+    video.addEventListener('ended', function () {
+
+        console.log("-------");
+        console.log("search for next video");
+
+        var video_id = randomizer(items);
+
+        // set video source
+        mp4_source.src = video_path + "/" + video_id + ".mp4";
+
+        // load video
+        video.load();
+
+    }, false);
 
 })();
